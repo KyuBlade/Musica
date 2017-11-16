@@ -1,0 +1,6 @@
+version '0.0.1'
+
+dependencies {
+    compile project(':core')
+    compile group: 'com.1stleg', name: 'jnativehook', version: '2.1.0'
+}

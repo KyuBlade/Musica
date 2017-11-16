@@ -1,0 +1,17 @@
+version '0.0.1'
+
+apply plugin: 'application'
+
+mainClassName = "com.arthium.musica.MainKt"
+
+dependencies {
+    compile project(':desktop')
+    compile 'com.googlecode.lanterna:lanterna:3.0.0'
+}
+
+startScripts {
+
+    doLast {
+        windowsScript.text = windowsScript.text.replace("java.exe", "javaw.exe")
+    }
+}

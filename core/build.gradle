@@ -1,0 +1,7 @@
+version '0.0.1'
+
+dependencies {
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile 'com.sedmelluq:lavaplayer:1.2.44'
+    compile 'org.greenrobot:eventbus:3.1.1'
+}

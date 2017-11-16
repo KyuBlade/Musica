@@ -1,0 +1,6 @@
+rootProject.name = 'musica'
+
+include 'core'
+include 'cli'
+include 'desktop'
+
