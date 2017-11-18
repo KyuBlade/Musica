@@ -13,7 +13,7 @@ import javax.sound.sampled.SourceDataLine
 
 object DesktopAudioPlayer : AudioPlayer {
 
-    private lateinit var sourceLine: SourceDataLine
+    private var sourceLine: SourceDataLine? = null
     private val playbackExecutor: Executor
 
     init {
@@ -37,18 +37,18 @@ object DesktopAudioPlayer : AudioPlayer {
     override fun pause() {
 
         AudioPlayerManager.pause()
-        sourceLine.stop()
+        sourceLine?.stop()
     }
 
     override fun resume() {
 
         AudioPlayerManager.resume()
-        sourceLine.start()
+        sourceLine?.start()
     }
 
     override fun cleanup() {
 
-        with(sourceLine) {
+        with(sourceLine!!) {
 
             stop()
             drain()
@@ -63,8 +63,11 @@ object DesktopAudioPlayer : AudioPlayer {
         val info: DataLine.Info = DataLine.Info(SourceDataLine::class.java, stream.format)
         sourceLine = AudioSystem.getLine(info) as SourceDataLine
 
-        sourceLine.open(stream.format)
-        sourceLine.start()
+        if(sourceLine == null)
+            return
+
+        sourceLine!!.open(stream.format)
+        sourceLine!!.start()
 
 
         val buffer = ByteArray(format.bufferSize(2))
@@ -73,7 +76,7 @@ object DesktopAudioPlayer : AudioPlayer {
         do {
             chunkSize = stream.read(buffer)
             if (chunkSize >= 0) {
-                sourceLine.write(buffer, 0, chunkSize)
+                sourceLine!!.write(buffer, 0, chunkSize)
             }
 
         } while (true)
