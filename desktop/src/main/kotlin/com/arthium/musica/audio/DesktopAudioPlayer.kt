@@ -34,7 +34,7 @@ object DesktopAudioPlayer : AudioPlayer {
 
     override fun play(track: AudioTrack) {
 
-        AudioPlayerManager.play(track)
+        AudioPlayerManager.play(track.makeClone())
     }
 
     override fun isPaused(): Boolean =

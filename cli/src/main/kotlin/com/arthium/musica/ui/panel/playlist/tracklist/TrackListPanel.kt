@@ -17,23 +17,9 @@ class TrackListPanel : Panel(BorderLayout()) {
     val playlistTable: TrackListTable
 
     init {
-        layoutData = BorderLayout.Location.CENTER
-
         playlistTable = TrackListTable()
         playlistTable.layoutData = BorderLayout.Location.CENTER
 
         addComponent(playlistTable.withBorder(Borders.singleLine()))
-    }
-
-    fun addEntry(title: String, duration: String) {
-
-        playlistTable.tableModel.addRow(title, duration)
-    }
-
-    fun clearEntries() {
-
-        val rowCount = playlistTable.tableModel.rowCount
-        for (i in rowCount - 1 downTo 0)
-            playlistTable.tableModel.removeRow(i)
     }
 }

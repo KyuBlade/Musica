@@ -9,7 +9,7 @@ class TrackSchedulerTableRenderer : DefaultTableRenderer<String>() {
 
     override fun getPreferredSize(table: Table<String>): TerminalSize {
         // Hack to fix scrollbars
-        table.visibleRows = Math.max(0, table.parent.size.rows - 4)
+        table.visibleRows = 4
 
         return super.getPreferredSize(table)
     }
