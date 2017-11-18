@@ -16,22 +16,20 @@ class PlayerPanel : Panel(LinearLayout(Direction.VERTICAL)) {
 
     private val titleLabel: Label
     private val trackProgressBar: ProgressBar
-    private val durationProgress: Label
+    private val volumeProgressBar: ProgressBar
 
     init {
         titleLabel = Label("Nothing playing")
-        trackProgressBar = ProgressBar(0, 100, 20).setValue(50)
-        durationProgress = Label("00:00/00:00")
+        trackProgressBar = ProgressBar(0, 100, 20)
+                .setValue(50)
+                .setLabelFormat("00:00/00:00")
+        volumeProgressBar = ProgressBar(0, 100, 10)
+                .setValue(100)
 
         addComponent(titleLabel)
-
-        val durationPanel = Panel(LinearLayout(Direction.HORIZONTAL))
-
-
-        durationPanel.addComponent(trackProgressBar)
-        durationPanel.addComponent(durationProgress)
-
-        addComponent(durationPanel)
+        addComponent(trackProgressBar)
+        addComponent(EmptySpace())
+        addComponent(volumeProgressBar)
     }
 
     override fun onAdded(container: Container?) {

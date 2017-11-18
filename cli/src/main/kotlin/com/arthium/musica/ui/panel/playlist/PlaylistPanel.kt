@@ -1,5 +1,6 @@
 package com.arthium.musica.ui.panel.playlist
 
+import com.arthium.musica.ui.panel.playlist.tracklist.TrackListPanel
 import com.googlecode.lanterna.TerminalSize
 import com.googlecode.lanterna.gui2.*
 

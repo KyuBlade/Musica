@@ -5,6 +5,7 @@ import com.arthium.musica.event.ShowPlaylistEvent
 import com.arthium.musica.event.ShowSearchEvent
 import com.arthium.musica.ui.panel.PlayerPanel
 import com.arthium.musica.ui.panel.playlist.PlaylistPanel
+import com.arthium.musica.ui.panel.scheduler.TrackSchedulerPanel
 import com.arthium.musica.ui.panel.search.SearchPanel
 import com.googlecode.lanterna.gui2.*
 import org.greenrobot.eventbus.EventBus
@@ -14,6 +15,8 @@ import org.greenrobot.eventbus.Subscribe
 class MainWindow : BasicWindow() {
 
     private val mainPanel: Panel
+
+    private val topPanel: Panel
 
     private val playlistPanel: PlaylistPanel
     private val playlistPanelContainer: Border
@@ -30,7 +33,11 @@ class MainWindow : BasicWindow() {
 
         mainPanel = Panel(BorderLayout())
 
-        mainPanel.addComponent(PlayerPanel.create(), BorderLayout.Location.TOP)
+        topPanel = Panel(BorderLayout())
+        topPanel.addComponent(PlayerPanel.create(), BorderLayout.Location.LEFT)
+        topPanel.addComponent(TrackSchedulerPanel.create(), BorderLayout.Location.CENTER)
+
+        mainPanel.addComponent(topPanel, BorderLayout.Location.TOP)
 
         playlistPanelContainer = PlaylistPanel.create()
         playlistPanel = playlistPanelContainer.component as PlaylistPanel
