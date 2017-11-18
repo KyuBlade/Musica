@@ -48,12 +48,16 @@ object DesktopAudioPlayer : AudioPlayer {
 
     override fun cleanup() {
 
-        with(sourceLine!!) {
+        sourceLine?.let {
 
-            stop()
-            drain()
-            close()
+            with(sourceLine!!) {
+
+                stop()
+                drain()
+                close()
+            }
         }
+
     }
 
     private fun runPlayback() {
