@@ -3,7 +3,7 @@ package com.arthium.musica.audio
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat
 import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
-import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.sound.sampled.AudioInputStream
 import javax.sound.sampled.AudioSystem
@@ -13,12 +13,18 @@ import javax.sound.sampled.SourceDataLine
 
 object DesktopAudioPlayer : AudioPlayer {
 
-    private lateinit var sourceLine: SourceDataLine
-    private val playbackExecutor: Executor
+    private var sourceLine: SourceDataLine? = null
+    private val playbackExecutor: ExecutorService
 
     init {
 
-        playbackExecutor = Executors.newSingleThreadExecutor()
+        playbackExecutor = Executors.newSingleThreadExecutor { r ->
+            val thread = Executors.defaultThreadFactory().newThread(r)
+            thread.name = "Playback thread"
+            thread.isDaemon = true
+
+            thread
+        }
 
         playbackExecutor.execute {
 
@@ -37,23 +43,27 @@ object DesktopAudioPlayer : AudioPlayer {
     override fun pause() {
 
         AudioPlayerManager.pause()
-        sourceLine.stop()
+        sourceLine?.stop()
     }
 
     override fun resume() {
 
         AudioPlayerManager.resume()
-        sourceLine.start()
+        sourceLine?.start()
     }
 
     override fun cleanup() {
 
-        with(sourceLine) {
+        sourceLine?.let {
 
-            stop()
-            drain()
-            close()
+            with(sourceLine!!) {
+
+                stop()
+                drain()
+                close()
+            }
         }
+
     }
 
     private fun runPlayback() {
@@ -63,8 +73,11 @@ object DesktopAudioPlayer : AudioPlayer {
         val info: DataLine.Info = DataLine.Info(SourceDataLine::class.java, stream.format)
         sourceLine = AudioSystem.getLine(info) as SourceDataLine
 
-        sourceLine.open(stream.format)
-        sourceLine.start()
+        if (sourceLine == null)
+            return
+
+        sourceLine!!.open(stream.format)
+        sourceLine!!.start()
 
 
         val buffer = ByteArray(format.bufferSize(2))
@@ -73,12 +86,8 @@ object DesktopAudioPlayer : AudioPlayer {
         do {
             chunkSize = stream.read(buffer)
             if (chunkSize >= 0) {
-                sourceLine.write(buffer, 0, chunkSize)
+                sourceLine!!.write(buffer, 0, chunkSize)
             }
-
         } while (true)
-
-        // Thread blocking application exit
-        println("Exit Playback thread")
     }
 }
