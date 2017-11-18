@@ -3,7 +3,7 @@ package com.arthium.musica.audio
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat
 import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
-import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.sound.sampled.AudioInputStream
 import javax.sound.sampled.AudioSystem
@@ -14,11 +14,17 @@ import javax.sound.sampled.SourceDataLine
 object DesktopAudioPlayer : AudioPlayer {
 
     private var sourceLine: SourceDataLine? = null
-    private val playbackExecutor: Executor
+    private val playbackExecutor: ExecutorService
 
     init {
 
-        playbackExecutor = Executors.newSingleThreadExecutor()
+        playbackExecutor = Executors.newSingleThreadExecutor { r ->
+            val thread = Executors.defaultThreadFactory().newThread(r)
+            thread.name = "Playback thread"
+            thread.isDaemon = true
+
+            thread
+        }
 
         playbackExecutor.execute {
 
@@ -67,7 +73,7 @@ object DesktopAudioPlayer : AudioPlayer {
         val info: DataLine.Info = DataLine.Info(SourceDataLine::class.java, stream.format)
         sourceLine = AudioSystem.getLine(info) as SourceDataLine
 
-        if(sourceLine == null)
+        if (sourceLine == null)
             return
 
         sourceLine!!.open(stream.format)
@@ -82,10 +88,6 @@ object DesktopAudioPlayer : AudioPlayer {
             if (chunkSize >= 0) {
                 sourceLine!!.write(buffer, 0, chunkSize)
             }
-
         } while (true)
-
-        // Thread blocking application exit
-        println("Exit Playback thread")
     }
 }
