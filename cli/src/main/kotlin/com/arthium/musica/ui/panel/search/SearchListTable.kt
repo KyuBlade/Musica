@@ -23,6 +23,9 @@ class SearchListTable : Table<String>("Title", "Duration") {
 
         setSelectAction {
 
+            if(tableModel.rowCount == 0)
+                return@setSelectAction
+
             ActionListDialogBuilder()
                     .setTitle("Action List Dialog")
                     .setDescription("Choose an item")

@@ -21,6 +21,10 @@ class TrackSchedulerTable : Table<String>("", "", "") {
 
         setSelectAction {
 
+            if(tableModel.rowCount == 0)
+                return@setSelectAction
+
+
             ActionListDialogBuilder()
                     .setTitle("Actions")
                     .addAction("Play") {
