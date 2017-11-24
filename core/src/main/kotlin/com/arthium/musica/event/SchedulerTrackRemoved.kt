@@ -1,6 +1,6 @@
 package com.arthium.musica.event
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack
+import com.arthium.musica.audio.track.ScheduledAudioTrack
 
 
-class SchedulerTrackRemoved(val index: Int, track: AudioTrack)
+class SchedulerTrackRemoved(val index: Int, audioTrack: ScheduledAudioTrack)

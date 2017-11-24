@@ -1,6 +1,8 @@
 package com.arthium.musica.audio
 
-import com.arthium.musica.TrackScheduler
+import com.arthium.musica.audio.scheduler.TrackScheduler
+import com.arthium.musica.audio.track.CustomAudioTrack
+import com.arthium.musica.audio.track.PreviewAudioTrack
 import com.arthium.musica.event.PlayTrackEvent
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration
@@ -9,7 +11,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
 import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import org.greenrobot.eventbus.EventBus
 import java.util.concurrent.TimeUnit
 
@@ -29,14 +30,16 @@ object AudioPlayerManager : com.arthium.musica.audio.AudioPlayer {
         playerManager.configuration.resamplingQuality = AudioConfiguration.ResamplingQuality.HIGH
         playerManager.frameBufferDuration = TimeUnit.SECONDS.toMillis(1).toInt()
 
-        trackScheduler = TrackScheduler()
-
         audioPlayer = playerManager.createPlayer()
+
+        trackScheduler = TrackScheduler(audioPlayer)
     }
 
-    override fun play(track: AudioTrack) {
+    override fun play(track: CustomAudioTrack) {
 
-        audioPlayer.playTrack(track)
+        trackScheduler.scheduling = track !is PreviewAudioTrack
+
+        audioPlayer.playTrack(track.track.makeClone())
 
         EventBus.getDefault().post(PlayTrackEvent(track))
     }
@@ -49,6 +52,18 @@ object AudioPlayerManager : com.arthium.musica.audio.AudioPlayer {
 
         for (i in 0..500 step 50) {
             playerManager.loadItemOrdered(query, "scsearch[$i,50]:$query", resultHandler)
+        }
+    }
+
+    fun skip(forward: Boolean = true) {
+
+        if (!trackScheduler.scheduling) {
+
+            trackScheduler.scheduling = true
+            trackScheduler.currentTrack?.let { play(it) }
+        } else {
+
+            trackScheduler.skip(forward)
         }
     }
 

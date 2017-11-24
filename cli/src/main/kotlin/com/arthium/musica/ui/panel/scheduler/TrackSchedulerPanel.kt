@@ -1,5 +1,8 @@
 package com.arthium.musica.ui.panel.scheduler
 
+import com.arthium.musica.audio.AudioPlayerManager
+import com.arthium.musica.audio.track.ScheduledAudioTrack
+import com.arthium.musica.event.PlayTrackEvent
 import com.arthium.musica.event.SchedulerTrackAdded
 import com.arthium.musica.event.SchedulerTrackRemoved
 import com.googlecode.lanterna.gui2.*
@@ -15,11 +18,9 @@ class TrackSchedulerPanel private constructor() : Panel(BorderLayout()) {
                 TrackSchedulerPanel().withBorder(Borders.singleLine("Scheduler"))
     }
 
-    private val schedulerTable: TrackSchedulerTable
+    private val schedulerTable: TrackSchedulerTable = TrackSchedulerTable()
 
     init {
-
-        schedulerTable = TrackSchedulerTable()
 
         addComponent(schedulerTable, BorderLayout.Location.CENTER)
     }
@@ -39,14 +40,24 @@ class TrackSchedulerPanel private constructor() : Panel(BorderLayout()) {
     @Subscribe
     fun onSchedulerTrackAdded(event: SchedulerTrackAdded) {
 
-        val track = event.track
+        val track = event.audioTrack
 
-        schedulerTable.addTrack(track)
+        schedulerTable.addTrack(track.track)
     }
 
     @Subscribe
     fun onSchedulerTrackRemoved(event: SchedulerTrackRemoved) {
 
         schedulerTable.removeAt(event.index)
+    }
+
+    @Subscribe
+    fun onPlayTrack(event: PlayTrackEvent) {
+
+        if (event.track is ScheduledAudioTrack) {
+
+            val index = AudioPlayerManager.trackScheduler.indexOf(event.track as ScheduledAudioTrack)
+            schedulerTable.selectedRow = index
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.arthium.musica.ui.panel.search
 
 import com.arthium.musica.audio.AudioPlayerManager
 import com.arthium.musica.audio.DesktopAudioPlayer
+import com.arthium.musica.audio.track.PreviewAudioTrack
 import com.arthium.musica.utils.StringUtils
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI
 import com.googlecode.lanterna.gui2.dialogs.ActionListDialogBuilder
@@ -27,10 +28,13 @@ class SearchListTable : Table<String>("Title", "Duration") {
                     .setDescription("Choose an item")
                     .addAction("Play") {
 
-                        DesktopAudioPlayer.play(tracks[selectedRow])
+                        val track = tracks[selectedRow]
+                        DesktopAudioPlayer.play(PreviewAudioTrack(track))
                     }
                     .addAction("Add to scheduler") {
-                        AudioPlayerManager.trackScheduler.add(tracks[selectedRow])
+
+                        val scheduler =  AudioPlayerManager.trackScheduler
+                       scheduler.add(tracks[selectedRow])
                     }
                     .addAction("Add to playlist") {
 

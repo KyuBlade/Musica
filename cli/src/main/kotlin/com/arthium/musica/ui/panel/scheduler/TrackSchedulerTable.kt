@@ -4,6 +4,8 @@ import com.arthium.musica.audio.AudioPlayerManager
 import com.arthium.musica.audio.DesktopAudioPlayer
 import com.arthium.musica.ui.NullTableHeaderRenderer
 import com.arthium.musica.utils.StringUtils
+import com.googlecode.lanterna.gui2.WindowBasedTextGUI
+import com.googlecode.lanterna.gui2.dialogs.ActionListDialogBuilder
 import com.googlecode.lanterna.gui2.table.Table
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 
@@ -16,10 +18,22 @@ class TrackSchedulerTable : Table<String>("", "", "") {
         tableCellRenderer = TrackSchedulerTableCellRenderer()
         tableHeaderRenderer = NullTableHeaderRenderer()
         isEscapeByArrowKey = false
+
         setSelectAction {
 
-            val track = AudioPlayerManager.trackScheduler.get(selectedRow)
-            DesktopAudioPlayer.play(track.makeClone())
+            ActionListDialogBuilder()
+                    .setTitle("Actions")
+                    .addAction("Play") {
+
+                        val track = AudioPlayerManager.trackScheduler.get(selectedRow)
+                        DesktopAudioPlayer.play(track)
+                    }
+                    .addAction("Remove") {
+
+                        AudioPlayerManager.trackScheduler.remove(selectedRow)
+                    }
+                    .build()
+                    .showDialog(textGUI as WindowBasedTextGUI)
         }
     }
 

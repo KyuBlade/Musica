@@ -1,6 +1,6 @@
 package com.arthium.musica.event
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack
+import com.arthium.musica.audio.track.CustomAudioTrack
 
 
-data class PlayTrackEvent(val track: AudioTrack)
+data class PlayTrackEvent(val track: CustomAudioTrack)

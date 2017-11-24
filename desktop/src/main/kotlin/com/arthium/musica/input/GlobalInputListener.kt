@@ -2,6 +2,7 @@ package com.arthium.musica.input
 
 import com.arthium.musica.audio.AudioPlayerManager
 import com.arthium.musica.audio.DesktopAudioPlayer
+import com.arthium.musica.audio.track.PreviewAudioTrack
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
@@ -26,6 +27,16 @@ class GlobalInputListener : NativeKeyAdapter() {
                         DesktopAudioPlayer.pause()
                 }
 
+                NativeKeyEvent.VC_MEDIA_PREVIOUS -> {
+
+                    AudioPlayerManager.skip(false)
+                }
+
+                NativeKeyEvent.VC_MEDIA_NEXT -> {
+
+                    AudioPlayerManager.skip(true)
+                }
+
                 NativeKeyEvent.VC_F5 -> {
 
                     AudioPlayerManager.playerManager.loadItem("https://soundcloud.com/vonikk/vonikk-katana",
@@ -36,7 +47,7 @@ class GlobalInputListener : NativeKeyAdapter() {
                                 }
 
                                 override fun trackLoaded(track: AudioTrack) {
-                                    DesktopAudioPlayer.play(track)
+                                    DesktopAudioPlayer.play(PreviewAudioTrack(track))
                                 }
 
                                 override fun noMatches() {

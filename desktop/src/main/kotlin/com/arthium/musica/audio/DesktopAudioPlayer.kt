@@ -1,8 +1,8 @@
 package com.arthium.musica.audio
 
+import com.arthium.musica.audio.track.CustomAudioTrack
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat
 import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.sound.sampled.AudioInputStream
@@ -32,9 +32,9 @@ object DesktopAudioPlayer : AudioPlayer {
         }
     }
 
-    override fun play(track: AudioTrack) {
+    override fun play(track: CustomAudioTrack) {
 
-        AudioPlayerManager.play(track.makeClone())
+        AudioPlayerManager.play(track)
     }
 
     override fun isPaused(): Boolean =
