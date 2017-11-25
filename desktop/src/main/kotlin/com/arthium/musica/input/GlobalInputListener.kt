@@ -19,7 +19,7 @@ class GlobalInputListener : NativeKeyAdapter() {
 
             when (it.keyCode) {
 
-                NativeKeyEvent.VC_MEDIA_PLAY -> {
+                NativeKeyEvent.VC_MEDIA_PLAY, NativeKeyEvent.VC_P -> {
 
                     if (DesktopAudioPlayer.isPaused())
                         DesktopAudioPlayer.resume()
@@ -27,12 +27,12 @@ class GlobalInputListener : NativeKeyAdapter() {
                         DesktopAudioPlayer.pause()
                 }
 
-                NativeKeyEvent.VC_MEDIA_PREVIOUS -> {
+                NativeKeyEvent.VC_MEDIA_PREVIOUS, NativeKeyEvent.VC_PAGE_UP -> {
 
                     AudioPlayerManager.skip(false)
                 }
 
-                NativeKeyEvent.VC_MEDIA_NEXT -> {
+                NativeKeyEvent.VC_MEDIA_NEXT, NativeKeyEvent.VC_PAGE_DOWN -> {
 
                     AudioPlayerManager.skip(true)
                 }
