@@ -42,8 +42,12 @@ class TrackScheduler(private val audioPlayer: AudioPlayer) : AudioEventAdapter()
             return
 
         val removedTrack = queue.removeAt(index)
+
         removedTrack.previous?.next = removedTrack.next
         removedTrack.next?.previous = removedTrack.previous
+
+        removedTrack.previous = null
+        removedTrack.next = null
 
         EventBus.getDefault().post(SchedulerTrackRemoved(index, removedTrack))
     }
