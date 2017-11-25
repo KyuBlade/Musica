@@ -18,31 +18,9 @@ class TrackSchedulerTableCellRenderer : DefaultTableCellRenderer<String>() {
 
     override fun drawCell(table: Table<String>, cell: String, columnIndex: Int, rowIndex: Int, textGUIGraphics: TextGUIGraphics) {
 
-        when (columnIndex) {
+        val finalCell = if (columnIndex == 0) (rowIndex + 1).toString()
+        else cell
 
-            0 -> {
-                val themeDefinition = table.themeDefinition
-                if (table.selectedColumn == columnIndex && table.selectedRow == rowIndex ||
-                        table.selectedRow == rowIndex && !table.isCellSelection) {
-
-                    if (table.isFocused) {
-
-                        textGUIGraphics.applyThemeStyle(themeDefinition.active)
-                    } else {
-
-                        textGUIGraphics.applyThemeStyle(themeDefinition.selected)
-                    }
-
-                    textGUIGraphics.fill(' ')  //Make sure to fill the whole cell first
-                } else {
-
-                    textGUIGraphics.applyThemeStyle(themeDefinition.normal)
-                }
-
-                textGUIGraphics.putString(0, 0, (rowIndex + 1).toString())
-
-            }
-            else -> super.drawCell(table, cell, columnIndex, rowIndex, textGUIGraphics)
-        }
+         super.drawCell(table, finalCell, columnIndex, rowIndex, textGUIGraphics)
     }
 }
