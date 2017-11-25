@@ -45,7 +45,7 @@ class TrackSchedulerTable : Table<String>("", "", "") {
     fun addTrack(track: AudioTrack) {
 
         tableModel.addRow(
-                (tableModel.rowCount + 1).toString(),
+                "",
                 track.info.title,
                 StringUtils.formatDuration(track.duration)
         )
