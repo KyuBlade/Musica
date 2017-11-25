@@ -38,6 +38,9 @@ class TrackScheduler(private val audioPlayer: AudioPlayer) : AudioEventAdapter()
 
     fun remove(index: Int) {
 
+        if (index < 0 || index >= queue.size)
+            return
+
         val removedTrack = queue.removeAt(index)
         removedTrack.previous?.next = removedTrack.next
         removedTrack.next?.previous = removedTrack.previous
@@ -45,10 +48,14 @@ class TrackScheduler(private val audioPlayer: AudioPlayer) : AudioEventAdapter()
         EventBus.getDefault().post(SchedulerTrackRemoved(index, removedTrack))
     }
 
-    fun get(index: Int) =
-            queue[index]
+    fun get(index: Int): ScheduledAudioTrack? {
 
-    fun indexOf(track: ScheduledAudioTrack) =
+        return if (index < 0 || index >= queue.size) null
+        else queue[index]
+    }
+
+
+    fun indexOf(track: ScheduledAudioTrack): Int =
             queue.indexOf(track)
 
     fun count(): Int =
@@ -57,12 +64,14 @@ class TrackScheduler(private val audioPlayer: AudioPlayer) : AudioEventAdapter()
     fun getPreviousTrack(): ScheduledAudioTrack? =
             when {
                 currentTrack?.previous != null -> currentTrack?.previous!!
+                queue.isEmpty() -> null
                 else -> queue.last()
             }
 
     fun getNextTrack(): ScheduledAudioTrack? =
             when {
                 currentTrack?.next != null -> currentTrack?.next!!
+                queue.isEmpty() -> null
                 else -> queue.first()
             }
 

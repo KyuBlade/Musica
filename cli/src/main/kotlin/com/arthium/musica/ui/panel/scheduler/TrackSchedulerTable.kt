@@ -21,7 +21,7 @@ class TrackSchedulerTable : Table<String>("", "", "") {
 
         setSelectAction {
 
-            if(tableModel.rowCount == 0)
+            if (tableModel.rowCount == 0)
                 return@setSelectAction
 
 
@@ -30,7 +30,8 @@ class TrackSchedulerTable : Table<String>("", "", "") {
                     .addAction("Play") {
 
                         val track = AudioPlayerManager.trackScheduler.get(selectedRow)
-                        DesktopAudioPlayer.play(track)
+                        track?.let { DesktopAudioPlayer.play(it) }
+
                     }
                     .addAction("Remove") {
 
@@ -51,6 +52,19 @@ class TrackSchedulerTable : Table<String>("", "", "") {
     }
 
     fun removeAt(index: Int) {
+
+        if (selectedRow == index) {
+
+            val rowCount = tableModel.rowCount - 1
+            var nextIndex = index
+
+            if (nextIndex >= rowCount)
+                nextIndex = Math.max(index - 1, 0)
+            else if (nextIndex < 0)
+                nextIndex = 0
+
+            selectedRow = nextIndex
+        }
 
         tableModel.removeRow(index)
     }
