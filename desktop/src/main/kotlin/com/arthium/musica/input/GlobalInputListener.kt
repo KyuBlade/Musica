@@ -2,6 +2,7 @@ package com.arthium.musica.input
 
 import com.arthium.musica.audio.AudioPlayerManager
 import com.arthium.musica.audio.DesktopAudioPlayer
+import com.arthium.musica.audio.track.PreviewAudioTrack
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
@@ -18,12 +19,22 @@ class GlobalInputListener : NativeKeyAdapter() {
 
             when (it.keyCode) {
 
-                NativeKeyEvent.VC_MEDIA_PLAY -> {
+                NativeKeyEvent.VC_MEDIA_PLAY, NativeKeyEvent.VC_P -> {
 
                     if (DesktopAudioPlayer.isPaused())
                         DesktopAudioPlayer.resume()
                     else
                         DesktopAudioPlayer.pause()
+                }
+
+                NativeKeyEvent.VC_MEDIA_PREVIOUS, NativeKeyEvent.VC_PAGE_UP -> {
+
+                    AudioPlayerManager.skip(false)
+                }
+
+                NativeKeyEvent.VC_MEDIA_NEXT, NativeKeyEvent.VC_PAGE_DOWN -> {
+
+                    AudioPlayerManager.skip(true)
                 }
 
                 NativeKeyEvent.VC_F5 -> {
@@ -36,7 +47,7 @@ class GlobalInputListener : NativeKeyAdapter() {
                                 }
 
                                 override fun trackLoaded(track: AudioTrack) {
-                                    DesktopAudioPlayer.play(track)
+                                    DesktopAudioPlayer.play(PreviewAudioTrack(track))
                                 }
 
                                 override fun noMatches() {

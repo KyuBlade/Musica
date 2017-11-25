@@ -53,12 +53,13 @@
 
     </appender>
 
-    <!-- Send logs to both console and file audit -->
-    <logger name="com.arthium.musica" level="debug"
-            additivity="false">
+    <logger name="com.sedmelluq.discord.lavaplayer.player" level="DEBUG" />
+    <logger name="com.arthium.musica" level="DEBUG" />
+
+    <root level="debug">
         <appender-ref ref="FILE-AUDIT"/>
-        <appender-ref ref="STDOUT"/>
-    </logger>
+        <appender-ref ref="STDOUT" />
+    </root>
 
     <root level="error">
         <appender-ref ref="FILE-ERROR"/>

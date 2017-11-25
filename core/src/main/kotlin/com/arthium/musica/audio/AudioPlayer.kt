@@ -1,11 +1,11 @@
 package com.arthium.musica.audio
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack
+import com.arthium.musica.audio.track.CustomAudioTrack
 
 
 interface AudioPlayer {
 
-    fun play(track: AudioTrack)
+    fun play(track: CustomAudioTrack)
 
     fun isPaused() : Boolean
 

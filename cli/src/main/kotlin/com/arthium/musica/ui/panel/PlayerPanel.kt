@@ -47,6 +47,6 @@ class PlayerPanel : Panel(LinearLayout(Direction.VERTICAL)) {
     @Subscribe
     fun onPlayTrack(event: PlayTrackEvent) {
 
-        titleLabel.text = event.track.info.title
+        titleLabel.text = event.track.track.info.title
     }
 }

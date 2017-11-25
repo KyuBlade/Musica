@@ -1,6 +1,9 @@
 package com.arthium.musica.ui.panel.search
 
+import com.arthium.musica.audio.AudioPlayerManager
 import com.arthium.musica.audio.DesktopAudioPlayer
+import com.arthium.musica.audio.track.PreviewAudioTrack
+import com.arthium.musica.utils.StringUtils
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI
 import com.googlecode.lanterna.gui2.dialogs.ActionListDialogBuilder
 import com.googlecode.lanterna.gui2.table.Table
@@ -14,20 +17,27 @@ class SearchListTable : Table<String>("Title", "Duration") {
     init {
 
         renderer = SearchListTableRenderer()
+        tableHeaderRenderer = SearchListTableHeaderRenderer()
         tableCellRenderer = SearchListTableCellRenderer()
         isEscapeByArrowKey = false
 
         setSelectAction {
+
+            if(tableModel.rowCount == 0)
+                return@setSelectAction
 
             ActionListDialogBuilder()
                     .setTitle("Action List Dialog")
                     .setDescription("Choose an item")
                     .addAction("Play") {
 
-                        DesktopAudioPlayer.play(tracks[selectedRow].makeClone())
+                        val track = tracks[selectedRow]
+                        DesktopAudioPlayer.play(PreviewAudioTrack(track))
                     }
-                    .addAction("Add to queue") {
+                    .addAction("Add to scheduler") {
 
+                        val scheduler =  AudioPlayerManager.trackScheduler
+                       scheduler.add(tracks[selectedRow])
                     }
                     .addAction("Add to playlist") {
 
@@ -40,7 +50,7 @@ class SearchListTable : Table<String>("Title", "Duration") {
     fun addTrack(track: AudioTrack) {
 
         tracks.add(track)
-        tableModel.addRow(track.info.title, track.duration.toString())
+        tableModel.addRow(track.info.title, StringUtils.formatDuration(track.duration))
     }
 
     fun clearEntries() {

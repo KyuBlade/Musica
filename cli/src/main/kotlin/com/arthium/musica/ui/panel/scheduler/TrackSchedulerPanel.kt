@@ -1,10 +1,13 @@
 package com.arthium.musica.ui.panel.scheduler
 
-import com.googlecode.lanterna.gui2.Border
-import com.googlecode.lanterna.gui2.BorderLayout
-import com.googlecode.lanterna.gui2.Borders
-import com.googlecode.lanterna.gui2.Panel
-import com.googlecode.lanterna.gui2.table.Table
+import com.arthium.musica.audio.AudioPlayerManager
+import com.arthium.musica.audio.track.ScheduledAudioTrack
+import com.arthium.musica.event.PlayTrackEvent
+import com.arthium.musica.event.SchedulerTrackAdded
+import com.arthium.musica.event.SchedulerTrackRemoved
+import com.googlecode.lanterna.gui2.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 
 class TrackSchedulerPanel private constructor() : Panel(BorderLayout()) {
@@ -15,17 +18,46 @@ class TrackSchedulerPanel private constructor() : Panel(BorderLayout()) {
                 TrackSchedulerPanel().withBorder(Borders.singleLine("Scheduler"))
     }
 
-    private val schedulerTable: Table<String>
+    private val schedulerTable: TrackSchedulerTable = TrackSchedulerTable()
 
     init {
 
-        schedulerTable = TrackSchedulerTable()
-
-
-        schedulerTable.tableModel.addRow("1. ", "Title", "Duration")
-        schedulerTable.tableModel.addRow("2. ", "Title", "Duration")
-        schedulerTable.tableModel.addRow("3. ", "Title", "Duration")
-
         addComponent(schedulerTable, BorderLayout.Location.CENTER)
+    }
+
+    override fun onAdded(container: Container?) {
+        super.onAdded(container)
+
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onRemoved(container: Container?) {
+        super.onRemoved(container)
+
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe
+    fun onSchedulerTrackAdded(event: SchedulerTrackAdded) {
+
+        val track = event.audioTrack
+
+        schedulerTable.addTrack(track.track)
+    }
+
+    @Subscribe
+    fun onSchedulerTrackRemoved(event: SchedulerTrackRemoved) {
+
+        schedulerTable.removeAt(event.index)
+    }
+
+    @Subscribe
+    fun onPlayTrack(event: PlayTrackEvent) {
+
+        if (event.track is ScheduledAudioTrack) {
+
+            val index = AudioPlayerManager.trackScheduler.indexOf(event.track as ScheduledAudioTrack)
+            schedulerTable.selectedRow = index
+        }
     }
 }

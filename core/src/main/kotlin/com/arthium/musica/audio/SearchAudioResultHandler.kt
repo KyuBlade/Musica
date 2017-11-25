@@ -15,7 +15,7 @@ class SearchAudioResultHandler(private var callback: AudioLoadResultHandler) : A
     }
 
     override fun trackLoaded(track: AudioTrack?) {
-        println("Loaded track ${track?.info?.title}")
+        println("Loaded audioTrack ${track?.info?.title}")
 
         callback.trackLoaded(track)
     }
