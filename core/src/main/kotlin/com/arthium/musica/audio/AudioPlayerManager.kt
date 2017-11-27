@@ -3,7 +3,7 @@ package com.arthium.musica.audio
 import com.arthium.musica.audio.scheduler.TrackScheduler
 import com.arthium.musica.audio.track.CustomAudioTrack
 import com.arthium.musica.audio.track.PreviewAudioTrack
-import com.arthium.musica.event.PlayTrackEvent
+import com.arthium.musica.event.TrackPlayEvent
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
@@ -33,6 +33,7 @@ object AudioPlayerManager : com.arthium.musica.audio.AudioPlayer {
         audioPlayer = playerManager.createPlayer()
 
         trackScheduler = TrackScheduler(audioPlayer)
+        audioPlayer.addListener(trackScheduler)
     }
 
     override fun play(track: CustomAudioTrack) {
@@ -41,7 +42,7 @@ object AudioPlayerManager : com.arthium.musica.audio.AudioPlayer {
 
         audioPlayer.playTrack(track.track.makeClone())
 
-        EventBus.getDefault().post(PlayTrackEvent(track))
+        EventBus.getDefault().post(TrackPlayEvent(track))
     }
 
     fun search(query: String, loadCallback: AudioLoadResultHandler) {

@@ -2,6 +2,8 @@ package com.arthium.musica.audio.scheduler
 
 import com.arthium.musica.audio.AudioPlayerManager
 import com.arthium.musica.audio.track.ScheduledAudioTrack
+import com.arthium.musica.event.PlayerPauseEvent
+import com.arthium.musica.event.PlayerResumeEvent
 import com.arthium.musica.event.SchedulerTrackAdded
 import com.arthium.musica.event.SchedulerTrackRemoved
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
@@ -86,6 +88,16 @@ class TrackScheduler(private val audioPlayer: AudioPlayer) : AudioEventAdapter()
             currentTrack = if (forward) getNextTrack() else getPreviousTrack()
             currentTrack?.let { AudioPlayerManager.play(currentTrack!!) }
         }
+    }
+
+    override fun onPlayerResume(player: AudioPlayer) {
+
+        EventBus.getDefault().post(PlayerResumeEvent())
+    }
+
+    override fun onPlayerPause(player: AudioPlayer) {
+
+        EventBus.getDefault().post(PlayerPauseEvent())
     }
 
     override fun onTrackStuck(player: AudioPlayer, track: AudioTrack, thresholdMs: Long) {

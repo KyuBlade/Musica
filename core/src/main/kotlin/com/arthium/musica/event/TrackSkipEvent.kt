@@ -6,4 +6,4 @@ package com.arthium.musica.event
  *
  * @param forward true if skipping forward, false otherwise
  */
-class SkipTrackEvent(forward: Boolean = true)
+class TrackSkipEvent(forward: Boolean = true)
