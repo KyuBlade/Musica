@@ -13,6 +13,7 @@ buildscript {
 subprojects {
 
     group 'com.arthium.musica'
+    version '0.2.0'
 
     repositories {
         mavenCentral()
