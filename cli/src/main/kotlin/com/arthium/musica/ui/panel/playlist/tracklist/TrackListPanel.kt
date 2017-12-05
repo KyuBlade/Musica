@@ -14,12 +14,10 @@ class TrackListPanel : Panel(BorderLayout()) {
                 TrackListPanel().withBorder(Borders.singleLineBevel("Tracks"))
     }
 
-    val playlistTable: TrackListTable
+    private val playlistTable: TrackListTable = TrackListTable()
 
     init {
-        playlistTable = TrackListTable()
-        playlistTable.layoutData = BorderLayout.Location.CENTER
 
-        addComponent(playlistTable.withBorder(Borders.singleLine()))
+        addComponent(playlistTable.withBorder(Borders.singleLine()), BorderLayout.Location.CENTER)
     }
 }

@@ -13,5 +13,11 @@ abstract class AbstractPlaylistWriter(
     val charset: Charset = Charset.forName(charsetName)
     val destinationDir: File = destinationDir ?: File(System.getProperty("user.dir"), "playlists")
 
+    init {
+
+        if (!this.destinationDir.exists())
+            this.destinationDir.mkdirs()
+    }
+
     abstract fun write(playlist: Playlist)
 }

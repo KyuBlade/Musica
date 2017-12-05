@@ -1,8 +1,11 @@
 package com.arthium.musica.ui.panel.playlist
 
+import com.arthium.musica.audio.playlist.PlaylistManager
+import com.arthium.musica.event.PlaylistCreatedEvent
 import com.arthium.musica.ui.panel.playlist.tracklist.TrackListPanel
-import com.googlecode.lanterna.TerminalSize
 import com.googlecode.lanterna.gui2.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 
 class PlaylistPanel : Panel(BorderLayout()) {
@@ -13,25 +16,44 @@ class PlaylistPanel : Panel(BorderLayout()) {
                 PlaylistPanel().withBorder(Borders.doubleLine("Playlist"))
     }
 
-    val trackListPanel: TrackListPanel
+    private val playlistListBox: PlaylistActionListBox
+    private val trackListPanel: TrackListPanel
 
     init {
-        val playlistListBox = ActionListBox(TerminalSize(15, 20))
-                .setLayoutData(BorderLayout.Location.LEFT)
+        val playlistListBoxComponent = PlaylistActionListBox.create()
+        playlistListBox = playlistListBoxComponent.component as PlaylistActionListBox
 
-        (0..20).forEach {
-            playlistListBox.addItem("Playlist $it", {
-                println("Display playlist $it")
-            })
-        }
-
-        addComponent(playlistListBox.withBorder(Borders.singleLineBevel("Playlists")))
+        addComponent(playlistListBoxComponent, BorderLayout.Location.LEFT)
 
         val trackListPanelContainer: Border = TrackListPanel.create() as Border
         trackListPanel = trackListPanelContainer.component as TrackListPanel
-        addComponent(trackListPanelContainer)
+        addComponent(trackListPanelContainer, BorderLayout.Location.CENTER)
 
         val menuPanel = PlaylistMenuPanel.create().setLayoutData(BorderLayout.Location.BOTTOM)
         addComponent(menuPanel)
+
+        // Populate list
+        PlaylistManager.get().forEach { playlist ->
+
+            playlistListBox.add(playlist)
+        }
+    }
+
+    override fun onAdded(container: Container?) {
+        super.onAdded(container)
+
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onRemoved(container: Container?) {
+        super.onRemoved(container)
+
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe
+    fun onPlaylistCreated(event: PlaylistCreatedEvent) {
+
+        playlistListBox.add(event.playlist)
     }
 }

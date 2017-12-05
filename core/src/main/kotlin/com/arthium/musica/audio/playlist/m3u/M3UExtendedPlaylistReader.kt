@@ -61,7 +61,7 @@ open class M3UExtendedPlaylistReader protected constructor(charsetName: String) 
 
                 val uri: String = reader.readLine() ?: throw PlaylistReaderException("Malformed playlist file: No URI found after info tag")
 
-                val track = PlaylistTrack(title, duration, uri)
+                val track = PlaylistTrack(title, duration * 1000L, uri)
                 playlist.tracks.add(track)
             }
         } while (true)

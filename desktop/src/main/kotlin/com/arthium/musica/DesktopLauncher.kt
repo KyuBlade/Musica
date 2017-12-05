@@ -1,5 +1,6 @@
 package com.arthium.musica
 
+import com.arthium.musica.audio.playlist.PlaylistManager
 import org.jnativehook.GlobalScreen
 import org.jnativehook.NativeHookException
 import java.util.logging.Level
@@ -10,6 +11,8 @@ abstract class DesktopLauncher {
 
     init {
         try {
+            PlaylistManager.load()
+
             GlobalScreen.registerNativeHook()
 
             val logger: Logger = Logger.getLogger(GlobalScreen::class.java.`package`.name)

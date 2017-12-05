@@ -13,7 +13,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
 
-class PlaylistTests {
+class M3UPlaylistTests {
 
     @Test
     fun writeM3UTest() {
@@ -29,7 +29,7 @@ class PlaylistTests {
         writer.write(playlist)
 
         val generatedPlaylistData: ByteArray = Files.readAllBytes(Paths.get(writer.destinationDir.path, "$playlistName.m3u"))
-        val samplePlaylistData: ByteArray = javaClass.getResource("/playlist-sample.m3u").readBytes()
+        val samplePlaylistData: ByteArray = javaClass.getResource("/m3u/playlist-sample.m3u").readBytes()
 
         Assert.assertTrue("Generated playlist file doesn't match the sample playlist file", Arrays.equals(generatedPlaylistData, samplePlaylistData))
     }
@@ -47,7 +47,7 @@ class PlaylistTests {
         writer.write(playlist)
 
         val generatedPlaylistData: ByteArray = Files.readAllBytes(Paths.get(writer.destinationDir.path, "$playlistName.m3u8"))
-        val samplePlaylistData: ByteArray = javaClass.getResource("/playlist-sample.m3u8").readBytes()
+        val samplePlaylistData: ByteArray = javaClass.getResource("/m3u/playlist-sample.m3u8").readBytes()
 
         Assert.assertTrue("Generated playlist file doesn't match the sample playlist file", Arrays.equals(generatedPlaylistData, samplePlaylistData))
     }
@@ -61,7 +61,7 @@ class PlaylistTests {
 
         val reader = M3UExtendedPlaylistReader()
 
-        javaClass.getResource("/playlist-sample.m3u").openStream().use {
+        javaClass.getResource("/m3u/playlist-sample.m3u").openStream().use {
 
             val playlist: Playlist = reader.read("Test", it)
 
@@ -74,19 +74,19 @@ class PlaylistTests {
 
                     0 -> {
                         Assert.assertEquals("First track title doesn't match", "Vonikk - Katana", track.title)
-                        Assert.assertEquals("First track duration doesn't match", 246, track.duration)
+                        Assert.assertEquals("First track duration doesn't match", 246000, track.duration)
                         Assert.assertEquals("First track uri doesn't match", firstTrackUri, track.uri)
                     }
 
                     1 -> {
                         Assert.assertEquals("Second track title doesn't match", "Vonikk - Phoenix", track.title)
-                        Assert.assertEquals("Second track duration doesn't match", 307, track.duration)
+                        Assert.assertEquals("Second track duration doesn't match", 307000, track.duration)
                         Assert.assertEquals("Second track uri doesn't match", secondTrackUri, track.uri)
                     }
 
                     3 -> {
                         Assert.assertEquals("Third track title doesn't match", "Vonikk - Nova", track.title)
-                        Assert.assertEquals("Third  track duration doesn't match", 349, track.duration)
+                        Assert.assertEquals("Third  track duration doesn't match", 349000, track.duration)
                         Assert.assertEquals("Third track uri doesn't match", thirdTrackUri, track.uri)
                     }
                 }
@@ -99,7 +99,7 @@ class PlaylistTests {
 
         val reader = M3UExtendedPlaylistReader()
 
-        javaClass.getResource("/playlist-wrong-header.m3u").openStream().use {
+        javaClass.getResource("/m3u/playlist-wrong-header.m3u").openStream().use {
             try {
                 reader.read("Test", it)
                 Assert.assertTrue("Exception for wrong header not thrown", false)
@@ -109,8 +109,7 @@ class PlaylistTests {
             }
         }
 
-
-        javaClass.getResource("/playlist-missing-info.m3u").openStream().use {
+        javaClass.getResource("/m3u/playlist-missing-info.m3u").openStream().use {
 
             try {
                 reader.read("Test", it)
@@ -121,7 +120,7 @@ class PlaylistTests {
             }
         }
 
-        javaClass.getResource("/playlist-malformed-duration.m3u").openStream().use {
+        javaClass.getResource("/m3u/playlist-malformed-duration.m3u").openStream().use {
 
             try {
                 reader.read("Test", it)
@@ -132,8 +131,7 @@ class PlaylistTests {
             }
         }
 
-
-        javaClass.getResource("/playlist-missing-uri.m3u").openStream().use {
+        javaClass.getResource("/m3u/playlist-missing-uri.m3u").openStream().use {
 
             try {
                 reader.read("Test", it)

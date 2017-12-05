@@ -54,6 +54,8 @@ class TrackScheduler(private val audioPlayer: AudioPlayer) : AudioEventAdapter()
         EventBus.getDefault().post(SchedulerTrackRemoved(index, removedTrack))
     }
 
+    fun get(): List<ScheduledAudioTrack> = queue.toList()
+
     fun get(index: Int): ScheduledAudioTrack? {
 
         return if (index < 0 || index >= queue.size) null
