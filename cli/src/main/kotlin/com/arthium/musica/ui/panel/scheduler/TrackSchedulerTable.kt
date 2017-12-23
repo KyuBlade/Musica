@@ -41,9 +41,17 @@ class TrackSchedulerTable : Table<String>("", "", "") {
 
                         AudioPlayerManager.trackScheduler.remove(selectedRow)
                     }
-                    .addAction("To playlist") {
+                    .addAction("Create playlist from scheduling ...") {
 
                         val playlistName = TextInputDialogBuilder()
+                                .setValidator { content: String ->
+
+                                    when {
+                                        content.isBlank() -> "Playlist name must not be empty"
+                                        PlaylistManager.exist(content) -> "Playlist $content already exist"
+                                        else -> null
+                                    }
+                                }
                                 .build()
                                 .showDialog(textGUI as WindowBasedTextGUI?)
                                 ?.let {

@@ -6,13 +6,14 @@ import com.arthium.musica.event.PlaylistCreatedEvent
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.nio.file.Paths
+import java.util.*
 
 
 object PlaylistManager {
 
     private val PLAYLIST_DIRECTORY: String = Paths.get(System.getProperty("user.dir"), "playlists").toString()
 
-    private val playlists: MutableMap<String, Playlist> = hashMapOf()
+    private val playlists: MutableMap<String, Playlist> = TreeMap(String.CASE_INSENSITIVE_ORDER)
     private val playlistWriter = MPLSPlaylistWriter()
 
     fun load() {
@@ -53,4 +54,6 @@ object PlaylistManager {
     fun get(): List<Playlist> = playlists.values.toList()
 
     fun get(name: String): Playlist? = playlists.getOrDefault(name, null)
+
+    fun exist(playlistName: String): Boolean = playlists.contains(playlistName)
 }
