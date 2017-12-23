@@ -25,11 +25,11 @@ object PlaylistManager {
             pathname.extension == "mpls"
 
         }).forEach { file: File ->
-                    playlistReader.read(file).let {
+            playlistReader.read(file).let {
 
-                        playlists[it.name] = it
-                    }
-                }
+                playlists[it.name] = it
+            }
+        }
     }
 
     fun save(playlistName: String) {

@@ -1,19 +1,24 @@
 package com.arthium.musica.audio.scheduler
 
 import com.arthium.musica.audio.AudioPlayerManager
+import com.arthium.musica.audio.playlist.Playlist
 import com.arthium.musica.audio.track.ScheduledAudioTrack
-import com.arthium.musica.event.PlayerPauseEvent
-import com.arthium.musica.event.PlayerResumeEvent
-import com.arthium.musica.event.SchedulerTrackAdded
-import com.arthium.musica.event.SchedulerTrackRemoved
+import com.arthium.musica.event.*
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason
 import org.greenrobot.eventbus.EventBus
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 
 class TrackScheduler(private val audioPlayer: AudioPlayer) : AudioEventAdapter() {
+
+    private val LOGGER: Logger = LoggerFactory.getLogger(javaClass)
 
     private val queue: MutableList<ScheduledAudioTrack> = mutableListOf()
     var currentTrack: ScheduledAudioTrack? = null
@@ -35,7 +40,39 @@ class TrackScheduler(private val audioPlayer: AudioPlayer) : AudioEventAdapter()
 
         queue.add(scheduledTrack)
 
-        EventBus.getDefault().post(SchedulerTrackAdded(scheduledTrack))
+        EventBus.getDefault().post(TrackSchedulerAddEvent(scheduledTrack))
+    }
+
+    fun set(playlist: Playlist) {
+
+        clear()
+        add(playlist)
+    }
+
+    fun add(playlist: Playlist) {
+
+        playlist.tracks.forEach {
+
+            AudioPlayerManager.playerManager.loadItemOrdered(playlist, it.uri, object : AudioLoadResultHandler {
+
+                override fun loadFailed(exception: FriendlyException?) {
+                    LOGGER.warn("Unable to load track ${it.title} (${it.uri})", exception)
+                }
+
+                override fun trackLoaded(track: AudioTrack) {
+
+                    add(track)
+                }
+
+                override fun noMatches() {
+                    LOGGER.warn("Track ${it.title} (${it.uri}) not found")
+                }
+
+                override fun playlistLoaded(playlist: AudioPlaylist) {
+                    // TODO: Management of playlist in playlists?
+                }
+            })
+        }
     }
 
     fun remove(index: Int) {
@@ -51,7 +88,7 @@ class TrackScheduler(private val audioPlayer: AudioPlayer) : AudioEventAdapter()
         removedTrack.previous = null
         removedTrack.next = null
 
-        EventBus.getDefault().post(SchedulerTrackRemoved(index, removedTrack))
+        EventBus.getDefault().post(TrackSchedulerRemoveEvent(index, removedTrack))
     }
 
     fun get(): List<ScheduledAudioTrack> = queue.toList()
@@ -90,6 +127,12 @@ class TrackScheduler(private val audioPlayer: AudioPlayer) : AudioEventAdapter()
             currentTrack = if (forward) getNextTrack() else getPreviousTrack()
             currentTrack?.let { AudioPlayerManager.play(currentTrack!!) }
         }
+    }
+
+    fun clear() {
+
+        queue.clear()
+        EventBus.getDefault().post(TrackSchedulerClearEvent())
     }
 
     override fun onPlayerResume(player: AudioPlayer) {

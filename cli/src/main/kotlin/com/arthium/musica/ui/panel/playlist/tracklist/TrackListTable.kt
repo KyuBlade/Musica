@@ -1,10 +1,19 @@
 package com.arthium.musica.ui.panel.playlist.tracklist
 
+import com.arthium.musica.audio.AudioPlayerManager
+import com.arthium.musica.audio.playlist.Playlist
 import com.arthium.musica.utils.StringUtils
+import com.googlecode.lanterna.gui2.WindowBasedTextGUI
+import com.googlecode.lanterna.gui2.dialogs.ActionListDialogBuilder
 import com.googlecode.lanterna.gui2.table.Table
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class TrackListTable : Table<String>("Title", "Duration") {
+
+    private val LOGGER: Logger = LoggerFactory.getLogger(javaClass)
+
+    private lateinit var playlist: Playlist
 
     init {
 
@@ -12,11 +21,34 @@ class TrackListTable : Table<String>("Title", "Duration") {
         tableHeaderRenderer = TrackListTableHeaderRenderer()
         tableCellRenderer = TrackListTableCellRenderer()
         isEscapeByArrowKey = false
+
+        setSelectAction {
+
+            ActionListDialogBuilder()
+                    .addAction("Add playlist to scheduler", {
+
+                        AudioPlayerManager.trackScheduler.add(playlist)
+                    })
+                    .addAction("Play playlist", {
+
+                        AudioPlayerManager.trackScheduler.set(playlist)
+                    })
+                    .build()
+                    .showDialog(textGUI as WindowBasedTextGUI?)
+        }
     }
 
-    fun addTrack(track: AudioTrack) {
+    fun setPlaylist(playlist: Playlist) {
 
-        tableModel.addRow(track.info.title, StringUtils.formatDuration(track.duration))
+        this.playlist = playlist
+
+        clearEntries()
+        playlist.tracks.forEach { addEntry(it.title, it.duration) }
+    }
+
+    fun addEntry(title: String, duration: Long) {
+
+        tableModel.addRow(title, StringUtils.formatDuration(duration))
     }
 
     fun clearEntries() {

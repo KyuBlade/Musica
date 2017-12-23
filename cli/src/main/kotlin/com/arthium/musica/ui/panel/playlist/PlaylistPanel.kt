@@ -1,5 +1,6 @@
 package com.arthium.musica.ui.panel.playlist
 
+import com.arthium.musica.audio.playlist.Playlist
 import com.arthium.musica.audio.playlist.PlaylistManager
 import com.arthium.musica.event.PlaylistCreatedEvent
 import com.arthium.musica.ui.panel.playlist.tracklist.TrackListPanel
@@ -31,6 +32,16 @@ class PlaylistPanel : Panel(BorderLayout()) {
 
         val menuPanel = PlaylistMenuPanel.create().setLayoutData(BorderLayout.Location.BOTTOM)
         addComponent(menuPanel)
+
+        // Set listener for playlist changes
+        playlistListBox.listener = object : ActionListBoxChangeListener {
+
+            override fun onSelectionChange(selectedIndex: Int, selectedItem: Runnable) {
+
+                val selectedPlaylist: Playlist? = PlaylistManager.get(selectedItem.toString())
+                selectedPlaylist?.let { trackListPanel.playlistTable.setPlaylist(it) }
+            }
+        }
 
         // Populate list
         PlaylistManager.get().forEach { playlist ->

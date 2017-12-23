@@ -88,4 +88,11 @@ class TrackSchedulerTable : Table<String>("", "", "") {
 
         tableModel.removeRow(index)
     }
+
+    fun clearEntries() {
+
+        val rowCount = tableModel.rowCount
+        for (i in rowCount - 1 downTo 0)
+            tableModel.removeRow(i)
+    }
 }

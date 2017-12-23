@@ -3,4 +3,4 @@ package com.arthium.musica.event
 import com.arthium.musica.audio.track.ScheduledAudioTrack
 
 
-class SchedulerTrackAdded(val audioTrack: ScheduledAudioTrack)
+class TrackSchedulerRemoveEvent(val index: Int, audioTrack: ScheduledAudioTrack)

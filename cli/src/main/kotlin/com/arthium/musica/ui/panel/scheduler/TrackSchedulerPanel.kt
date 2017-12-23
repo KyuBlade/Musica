@@ -2,9 +2,10 @@ package com.arthium.musica.ui.panel.scheduler
 
 import com.arthium.musica.audio.AudioPlayerManager
 import com.arthium.musica.audio.track.ScheduledAudioTrack
-import com.arthium.musica.event.SchedulerTrackAdded
-import com.arthium.musica.event.SchedulerTrackRemoved
 import com.arthium.musica.event.TrackPlayEvent
+import com.arthium.musica.event.TrackSchedulerAddEvent
+import com.arthium.musica.event.TrackSchedulerClearEvent
+import com.arthium.musica.event.TrackSchedulerRemoveEvent
 import com.googlecode.lanterna.gui2.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -38,7 +39,7 @@ class TrackSchedulerPanel private constructor() : Panel(BorderLayout()) {
     }
 
     @Subscribe
-    fun onSchedulerTrackAdded(event: SchedulerTrackAdded) {
+    fun onSchedulerTrackAdded(event: TrackSchedulerAddEvent) {
 
         val track = event.audioTrack
 
@@ -46,9 +47,15 @@ class TrackSchedulerPanel private constructor() : Panel(BorderLayout()) {
     }
 
     @Subscribe
-    fun onSchedulerTrackRemoved(event: SchedulerTrackRemoved) {
+    fun onSchedulerTrackRemoved(event: TrackSchedulerRemoveEvent) {
 
         schedulerTable.removeAt(event.index)
+    }
+
+    @Subscribe
+    fun onSchedulerCleared(event: TrackSchedulerClearEvent) {
+
+        schedulerTable.clearEntries()
     }
 
     @Subscribe
