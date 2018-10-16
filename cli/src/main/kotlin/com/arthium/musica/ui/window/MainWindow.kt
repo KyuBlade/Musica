@@ -59,11 +59,11 @@ class MainWindow : BasicWindow() {
             EventBus.getDefault().unregister(this)
         }
 
-        textGUI?.addListener({ _, keyStroke ->
+        textGUI?.addListener { _, keyStroke ->
 
             EventBus.getDefault().post(InputEvent(keyStroke))
             false
-        })
+        }
     }
 
     @Subscribe

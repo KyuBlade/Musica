@@ -80,7 +80,7 @@ object DesktopAudioPlayer : AudioPlayer {
         sourceLine!!.start()
 
 
-        val buffer = ByteArray(format.bufferSize(2))
+        val buffer = ByteArray(format.totalSampleCount())
         var chunkSize: Int
 
         do {

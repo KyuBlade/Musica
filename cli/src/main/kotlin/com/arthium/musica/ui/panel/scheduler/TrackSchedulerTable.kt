@@ -54,7 +54,7 @@ class TrackSchedulerTable : Table<String>("", "", "") {
                                 }
                                 .build()
                                 .showDialog(textGUI as WindowBasedTextGUI?)
-                                ?.let {
+                                ?.let { it ->
 
                                     val playlist = Playlist(it)
                                     AudioPlayerManager.trackScheduler.get().forEach {

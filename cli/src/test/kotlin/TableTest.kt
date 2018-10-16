@@ -8,7 +8,7 @@ fun main(args: Array<String>) {
 
     val screen = DefaultTerminalFactory().createScreen()
     screen.startScreen()
-    val textGUI = MultiWindowTextGUI(SeparateTextGUIThread.Factory(), screen);
+    val textGUI = MultiWindowTextGUI(SeparateTextGUIThread.Factory(), screen)
     textGUI.isBlockingIO = false
     textGUI.isEOFWhenNoWindows = true
 

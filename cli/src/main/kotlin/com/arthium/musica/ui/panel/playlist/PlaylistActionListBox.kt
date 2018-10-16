@@ -26,10 +26,10 @@ class PlaylistActionListBox private constructor() : ActionListBox(TerminalSize(1
 
     fun add(playlist: Playlist) {
 
-        addItem(playlist.name, {
+        addItem(playlist.name) {
 
             println("Play playlist ${playlist.name}")
-        })
+        }
     }
 
     override fun handleKeyStroke(keyStroke: KeyStroke?): Interactable.Result {

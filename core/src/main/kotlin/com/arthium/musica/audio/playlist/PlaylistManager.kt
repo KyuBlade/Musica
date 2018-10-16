@@ -21,11 +21,11 @@ object PlaylistManager {
         val playlistDir = File(PLAYLIST_DIRECTORY)
         val playlistReader = MPLSPlaylistReader()
 
-        playlistDir.listFiles({ pathname: File ->
+        playlistDir.listFiles { pathname: File ->
 
             pathname.extension == "mpls"
 
-        }).forEach { file: File ->
+        }.forEach { file: File ->
             playlistReader.read(file).let {
 
                 playlists[it.name] = it

@@ -25,14 +25,14 @@ class TrackListTable : Table<String>("Title", "Duration") {
         setSelectAction {
 
             ActionListDialogBuilder()
-                    .addAction("Add playlist to scheduler", {
+                    .addAction("Add playlist to scheduler") {
 
                         AudioPlayerManager.trackScheduler.add(playlist)
-                    })
-                    .addAction("Play playlist", {
+                    }
+                    .addAction("Play playlist") {
 
                         AudioPlayerManager.trackScheduler.set(playlist)
-                    })
+                    }
                     .build()
                     .showDialog(textGUI as WindowBasedTextGUI?)
         }

@@ -24,7 +24,7 @@ abstract class DesktopLauncher {
             System.err.println(ex.message)
         }
 
-        init()
+        this.init()
     }
 
     abstract fun init()

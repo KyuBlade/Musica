@@ -4,7 +4,7 @@ import com.arthium.musica.audio.scheduler.TrackScheduler
 import com.arthium.musica.audio.track.CustomAudioTrack
 import com.arthium.musica.audio.track.PreviewAudioTrack
 import com.arthium.musica.event.TrackPlayEvent
-import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat
+import com.sedmelluq.discord.lavaplayer.format.Pcm16AudioDataFormat
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
@@ -26,7 +26,7 @@ object AudioPlayerManager : com.arthium.musica.audio.AudioPlayer {
         playerManager.registerSourceManager(SoundCloudAudioSourceManager())
 
         playerManager.configuration.outputFormat =
-                AudioDataFormat(2, 44100, 960, AudioDataFormat.Codec.PCM_S16_BE)
+                Pcm16AudioDataFormat(2, 44100, 960, true)
         playerManager.configuration.resamplingQuality = AudioConfiguration.ResamplingQuality.HIGH
         playerManager.frameBufferDuration = TimeUnit.SECONDS.toMillis(1).toInt()
 

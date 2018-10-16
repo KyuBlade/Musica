@@ -21,7 +21,6 @@ class UIHandler {
     private val mainWindow: MainWindow
 
     init {
-
         terminal = DefaultTerminalFactory().createTerminal()
         screen = TerminalScreen(terminal)
         gui = MultiWindowTextGUI(screen)
@@ -42,7 +41,7 @@ class UIHandler {
         AudioPlayerManager.cleanup()
         DesktopAudioPlayer.cleanup()
         EventBus.getDefault().unregister(this)
-        GlobalScreen.unregisterNativeHook();
+        GlobalScreen.unregisterNativeHook()
     }
 
     @Subscribe
